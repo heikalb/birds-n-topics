@@ -36,25 +36,32 @@ def get_urls_by_family(family_keywords, url):
     return family_links
 
 
+def get_content_from_page(url):
+    # Get the whole page
+    req = requests.get(url)
+    html = req.text
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Get paragraph contents
+    curr_content = [elem.text for elem in soup.find_all('p') if elem.text]
+    curr_content = ''.join(curr_content)
+
+    return curr_content
+
+
 def get_texts(family_urls):
     family_content = dict()
 
     # Iterate by family
     for fam in family_urls:
+        family_content[fam] = []
+
         # Get content by species URL
         for url in family_urls[fam]:
             content = get_content_from_page(url)
+            family_content[fam].append(content)
 
-
-def get_content_from_page(url):
-    req = requests.get(url)
-    html = req.text
-    soup = BeautifulSoup(html, 'html.parser')
-
-    for e in soup.find_all('p'):
-        print(e)
-        print(e.text)
-    return
+    return family_content
 
 
 def get_data():
@@ -62,7 +69,7 @@ def get_data():
     families = ['Passerellidae', 'Anatidae']
 
     # Keywords to look for in each family
-    keywords = [['sparrow', 'bunting', 'junco', 'towhee'],
+    keywords = [['sparrow', 'junco', 'towhee'],
                 ['duck', 'goose', 'swan', 'teal', 'eider', 'scoter',
                  'goldeneye', 'merganser']]
 
@@ -75,8 +82,9 @@ def get_data():
     family_urls = get_urls_by_family(family_keywords, url)
 
     # Get text in wiki pages of birds in each family
-    get_texts(family_urls)
+    family_content = get_texts(family_urls)
 
+    return family_content
 
 
 if __name__ == '__main__':
