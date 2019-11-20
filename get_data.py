@@ -68,6 +68,7 @@ def get_content_from_page(url):
     # Get paragraph contents
     curr_content = [elem.text for elem in soup.find_all('p') if elem.text]
     curr_content = ''.join(curr_content)
+    curr_content = curr_content.strip()
 
     return curr_content
 
