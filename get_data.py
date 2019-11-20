@@ -1,8 +1,19 @@
+"""
+Get text content of Wikipedia pages of bird species from two taxonomic families
+Heikal Badrulhisham, 2019 <heikal93@gmail.com>
+"""
 import requests
 from bs4 import BeautifulSoup
 
 
 def get_links(keywords, url):
+    """
+    Find links in a given webpage that match a given list of keywords.
+    Helper method for get_urls_by_family.
+    :param keywords: keywords to look for in links
+    :param url: URl of page to search in
+    :return: list of links that matches the keywords
+    """
     # Get page with list of birds
     req = requests.get(url)
     html = req.text
@@ -27,6 +38,13 @@ def get_links(keywords, url):
 
 
 def get_urls_by_family(family_keywords, url):
+    """
+    Get URLs two Wikipedia pages of bird species.
+    :param family_keywords: dictionary of keywords to look for in species names
+    for ever family
+    :param url: URL of Wikipedia page with list of bird species
+    :return: dictionary of list of URLs for every bird family
+    """
     # Get URLs of bird wiki pages by each family
     family_links = dict()
 
@@ -37,6 +55,11 @@ def get_urls_by_family(family_keywords, url):
 
 
 def get_content_from_page(url):
+    """
+    Get text content from a page of a given URL (in <p> elements).
+    :param url: the URL of the webpage to be scraped.
+    :return: text content of the webpage (string)
+    """
     # Get the whole page
     req = requests.get(url)
     html = req.text
@@ -50,6 +73,11 @@ def get_content_from_page(url):
 
 
 def get_texts(family_urls):
+    """
+    Get content text from a given list of URLs
+    :param family_urls: dictionary of list of URLs by family
+    :return: dictionary of list of strings (webpage content) by family
+    """
     family_content = dict()
 
     # Iterate by family
@@ -65,6 +93,13 @@ def get_texts(family_urls):
 
 
 def get_data():
+    """
+    Get texts from Wikipedia pages on species of birds from two taxonomic
+    families.
+    :return: dictionary, where the keys are names of bird families, and the
+    values are list of strings (content of Wikipedia pages on species in a bird
+    family
+    """
     # Bird families
     families = ['Passerellidae', 'Anatidae']
 
