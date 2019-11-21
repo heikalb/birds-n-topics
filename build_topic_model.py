@@ -8,6 +8,7 @@ from nltk.stem import WordNetLemmatizer
 from gensim.models import LdaModel
 from gensim.corpora import Dictionary
 
+# Recurrently used NLP-related objects
 spacy_model = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
 
