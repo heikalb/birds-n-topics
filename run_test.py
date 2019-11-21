@@ -145,7 +145,7 @@ def evaluate_predictions(predictions):
 
 def main():
     # Get topic model and the corpus it is based on
-    topic_model, corpus = get_topic_model()
+    topic_model, corpus = get_topic_model(iterations=50, num_topics=20)
 
     # Split corpus into comparison and test lists
     keys = [k for k in corpus]
