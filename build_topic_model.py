@@ -40,30 +40,7 @@ def build_model(documents):
     return model
 
 
-def run_test(corpus, topic_model):
-    family_topics = dict()
-
-    for fam in corpus:
-        family_topics[fam] = []
-
-        for doc in corpus[fam]:
-            #print(doc)
-            doc = preprocess_documents([doc])
-            dictionary = Dictionary(doc)
-            bow = [dictionary.doc2bow(d) for d in doc]
-            #print(bow)
-            topic = topic_model.get_document_topics(bow)
-            family_topics[fam].append(topic)
-
-    for f in family_topics:
-        for t in family_topics[f]:
-            for x in t:
-                print(x)
-
-    return
-
-
-def main():
+def get_topic_model():
     # Get corpus
     corpus = get_data()
 
@@ -75,11 +52,4 @@ def main():
 
     # Build and train topic model
     topic_model = build_model(documents)
-
-    # Run test
-    run_test(corpus, topic_model)
-
-
-if __name__ == '__main__':
-    main()
-    exit(0)
+    return topic_model
