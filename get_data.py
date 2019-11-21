@@ -34,7 +34,7 @@ def get_links(keywords, url):
                 full_url = f'https://en.wikipedia.org/{href}'
                 links.append(full_url)
 
-    return links[:10]
+    return links
 
 
 def get_urls_by_family(family_keywords, url):
