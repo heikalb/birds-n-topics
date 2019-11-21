@@ -50,4 +50,5 @@ def get_topic_model():
 
     # Build and train topic model
     topic_model = build_model(documents)
-    return topic_model
+
+    return topic_model, corpus
