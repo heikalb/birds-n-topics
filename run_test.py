@@ -121,6 +121,9 @@ def cosine_similaity(topics_1, topics_2):
             sum_a_2 += t1[1]**2
             sum_b_2 += t2[1]**2
 
+    if not sum_ab:
+        return 0
+
     return sum_ab/(sum_a_2*sum_b_2)
 
 
@@ -145,7 +148,7 @@ def evaluate_predictions(predictions):
 
 def main():
     # Get topic model and the corpus it is based on
-    topic_model, corpus = get_topic_model(iterations=50, num_topics=20)
+    topic_model, corpus = get_topic_model(iterations=100, num_topics=40)
 
     # Split corpus into comparison and test lists
     keys = [k for k in corpus]
