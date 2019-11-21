@@ -35,8 +35,6 @@ def build_model(documents):
     model = LdaModel(corpus=bows, id2word=id2word, iterations=2,
                      num_topics=40)
 
-    topics = model.top_topics(bows)
-
     return model
 
 
