@@ -40,10 +40,12 @@ def preprocess_documents(documents):
     return processed_docs
 
 
-def build_model(documents):
+def build_model(documents, iterations=10, num_topics=10):
     """
     Build and train an LDA topic model for a list of documents.
     :param documents: list of documents
+    :param iterations: number of iterations for the LDA model
+    :param num_topics: number of topics for the LDA model
     :return: LDA topic model of the list of documents
     """
     # Get bag of words and word ID dictionary
@@ -53,16 +55,18 @@ def build_model(documents):
     id2word = dictionary.id2token
 
     # Train model
-    model = LdaModel(corpus=bows, id2word=id2word, iterations=2,
-                     num_topics=40)
+    model = LdaModel(corpus=bows, id2word=id2word, iterations=iterations,
+                     num_topics=num_topics)
 
     return model
 
 
-def get_topic_model():
+def get_topic_model(iterations, num_topics):
     """
     Get corpus of Wikipedia articles on bird species and a topic model based on
     the corpus.
+    :param iterations: number of iterations for training the topic model
+    :param num_topics: number of topics specified for the topic model
     :return: topic model, dictionary of bird family name to list of documents
     """
     # Get corpus
@@ -75,6 +79,6 @@ def get_topic_model():
     documents = preprocess_documents(documents)
 
     # Build and train topic model
-    topic_model = build_model(documents)
+    topic_model = build_model(documents, iterations, num_topics)
 
     return topic_model, corpus
