@@ -9,10 +9,10 @@ from bs4 import BeautifulSoup
 def get_links(keywords, url):
     """
     Find links in a given webpage that match a given list of keywords.
-    Helper method for get_urls_by_family.
-    :param keywords: keywords to look for in links
-    :param url: URl of page to search in
-    :return: list of links that matches the keywords
+    Helper method for get_urls_by_family().
+    :param keywords: keywords to look for in links (<a> elements)
+    :param url: URl of the page to search in
+    :return: list of links that match the keywords
     """
     # Get page with list of birds
     req = requests.get(url)
@@ -34,16 +34,18 @@ def get_links(keywords, url):
                 full_url = f'https://en.wikipedia.org/{href}'
                 links.append(full_url)
 
-    return links
+    return links[:10]
 
 
 def get_urls_by_family(family_keywords, url):
     """
-    Get URLs two Wikipedia pages of bird species.
+    Get URLs to Wikipedia pages of bird species within a family. Helper method
+    for get_data().
     :param family_keywords: dictionary of keywords to look for in species names
-    for ever family
+    for every family
     :param url: URL of Wikipedia page with list of bird species
-    :return: dictionary of list of URLs for every bird family
+    :return: dictionary where the keys are bird families, and the values are
+    list of URLs to Wikipedia articles on bird species in that family
     """
     # Get URLs of bird wiki pages by each family
     family_links = dict()
@@ -56,8 +58,9 @@ def get_urls_by_family(family_keywords, url):
 
 def get_content_from_page(url):
     """
-    Get text content from a page of a given URL (in <p> elements).
-    :param url: the URL of the webpage to be scraped.
+    Get text content from a page of a given URL (in <p> elements). Helper
+    method for get_texts().
+    :param url: the URL of the webpage to be scraped
     :return: text content of the webpage (string)
     """
     # Get the whole page
@@ -75,9 +78,10 @@ def get_content_from_page(url):
 
 def get_texts(family_urls):
     """
-    Get content text from a given list of URLs
-    :param family_urls: dictionary of list of URLs by family
-    :return: dictionary of list of strings (webpage content) by family
+    Get content text from a given list of URLs. Helper method for get_data().
+    :param family_urls: dictionary of list of URLs by bird family
+    :return: dictionary where the keys are names of bird families, and the
+    values are list of strings (webpage content)
     """
     family_content = dict()
 
