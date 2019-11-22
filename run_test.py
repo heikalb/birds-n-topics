@@ -1,7 +1,7 @@
 """
 Classify documents using topic similarity. The documents are Wikipedia articles
 on bird species. The categories are bird taxonomic families (e.g. Passerellidae
-, Anatidae. Documents in a comparison list are divided by taxonomic families.
+, Anatidae). Documents in a comparison list are divided by taxonomic families.
 Documents in the test list are to be classified on the taxonomic family of the
 bird species that the article is about. Test documents are assigned to a bird
 family based on its topic similarity to the other articles under that category.
@@ -84,9 +84,6 @@ def closest_category(document, comparison_topics):
     list
     :return: category label for the target document, i.e. the bird family
     """
-
-    closest_family = ''
-    highest_similarity = 0
     fam_similarity = defaultdict(int)
 
     # Sum up cosine similarity of the target document topics with the
@@ -176,7 +173,7 @@ def main():
     comparison_docs, test_docs = split_corpus(corpus, split)
 
     # Train an LDA topic model on the comparison documents
-    topic_model, corpus = get_topic_model(comparison_docs, iterations=100, num_topics=40)
+    topic_model = get_topic_model(comparison_docs, 100, 50)
 
     # Get the topics of the documents in the comparison list
     comparison_topics = get_topics(comparison_docs, topic_model)
