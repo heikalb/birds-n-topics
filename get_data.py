@@ -110,8 +110,9 @@ def get_data():
 
     # Keywords to look for in each family
     keywords = [['sparrow', 'junco', 'towhee'],
-                ['duck', 'goose', 'swan', 'teal', 'eider', 'scoter',
-                 'goldeneye', 'merganser']]
+                ['duck', 'goose', 'swan', 'teal', 'shoveler', 'wigeon',
+                 'eider', 'Mallard', 'pintail', 'scaup', 'scoter','goldeneye',
+                 'merganser']]
 
     family_keywords = dict(zip(families, keywords))
 
