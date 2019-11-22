@@ -7,6 +7,7 @@ bird species that the article is about. Test documents are assigned to a bird
 family based on its topic similarity to the other articles under that category.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
+from get_data import get_data
 from build_topic_model import get_topic_model
 from build_topic_model import preprocess_documents
 from gensim.corpora import Dictionary
@@ -166,13 +167,16 @@ def main():
     Get corpus and an LDA topic model based on it. Assign documents in the test
     list to a document category based on similarity in topics.
     """
-    # Get topic model and the corpus it is based on
-    topic_model, corpus = get_topic_model(iterations=100, num_topics=40)
+    # Get corpus
+    corpus = get_data()
 
     # Split corpus into comparison and test lists
     keys = [k for k in corpus]
-    split = int(len(corpus[keys[0]])*0.8)
+    split = int(len(corpus[keys[0]]) * 0.8)
     comparison_docs, test_docs = split_corpus(corpus, split)
+
+    # Train an LDA topic model on the comparison documents
+    topic_model, corpus = get_topic_model(comparison_docs, iterations=100, num_topics=40)
 
     # Get the topics of the documents in the comparison list
     comparison_topics = get_topics(comparison_docs, topic_model)
