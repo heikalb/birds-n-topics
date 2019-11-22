@@ -1,5 +1,10 @@
 """
-
+Classify documents using topic similarity. The documents are Wikipedia articles
+on bird species. The categories are bird taxonomic families (e.g. Passerellidae
+, Anatidae. Documents in a comparison list are divided by taxonomic families.
+Documents in the test list are to be classified on the taxonomic family of the
+bird species that the article is about. Test documents are assigned to a bird
+family based on its topic similarity to the other articles under that category.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
 from build_topic_model import get_topic_model
@@ -147,6 +152,10 @@ def evaluate_predictions(predictions):
 
 
 def main():
+    """
+    Get corpus and an LDA topic model based on it. Assign documents in the test
+    list to a document category based on similarity in topics.
+    """
     # Get topic model and the corpus it is based on
     topic_model, corpus = get_topic_model(iterations=100, num_topics=40)
 
