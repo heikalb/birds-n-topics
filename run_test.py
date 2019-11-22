@@ -10,6 +10,7 @@ Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 from build_topic_model import get_topic_model
 from build_topic_model import preprocess_documents
 from gensim.corpora import Dictionary
+from collections import defaultdict
 
 
 def split_corpus(corpus, split_idx):
@@ -85,16 +86,25 @@ def closest_category(document, comparison_topics):
 
     closest_family = ''
     highest_similarity = 0
+    fam_similarity = defaultdict(int)
 
-    # Find document with the highest cosine similarity with the target
-    # document
+    # Sum up cosine similarity of the target document topics with the
+    # comparison documents. Average the sum
     for fam in comparison_topics:
         for comp_doc in comparison_topics[fam]:
-            similarity = cosine_similaity(document, comp_doc)
+            fam_similarity[fam] += cosine_similaity(document, comp_doc)
 
-            if similarity > highest_similarity:
-                closest_family = fam
-                highest_similarity = similarity
+        fam_similarity[fam] = fam_similarity[fam]/len(comparison_topics[fam])
+
+    # Find the category of documents with which the target document has the
+    # highest average cosine similarity
+    max_sim = 0
+    closest_family = ''
+
+    for fam in fam_similarity:
+        if fam_similarity[fam] >= max_sim:
+            max_sim = fam_similarity[fam]
+            closest_family = fam
 
     return closest_family
 
