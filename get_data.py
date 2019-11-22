@@ -126,7 +126,3 @@ def get_data():
 
     return family_content
 
-
-if __name__ == '__main__':
-    get_data()
-    exit(0)
