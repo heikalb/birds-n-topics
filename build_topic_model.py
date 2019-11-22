@@ -78,4 +78,4 @@ def get_topic_model(corpus, iterations, num_topics):
     # Build and train topic model
     topic_model = build_model(documents, iterations, num_topics)
 
-    return topic_model, corpus
+    return topic_model
