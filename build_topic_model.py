@@ -61,7 +61,7 @@ def build_model(documents, iterations=10, num_topics=10):
     return model
 
 
-def get_topic_model(iterations, num_topics):
+def get_topic_model(corpus, iterations, num_topics):
     """
     Get corpus of Wikipedia articles on bird species and a topic model based on
     the corpus.
@@ -69,9 +69,6 @@ def get_topic_model(iterations, num_topics):
     :param num_topics: number of topics specified for the topic model
     :return: topic model, dictionary of bird family name to list of documents
     """
-    # Get corpus
-    corpus = get_data()
-
     # Gather all texts, regardless of taxonomic family
     documents = [doc for fam in corpus for doc in corpus[fam]]
 
