@@ -8,6 +8,7 @@ family based on its topic similarity to the other articles under that category.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
 from get_data import get_data
+import random
 from build_topic_model import get_topic_model
 from build_topic_model import preprocess_documents
 from gensim.corpora import Dictionary
@@ -127,6 +128,8 @@ def cosine_similaity(topics_1, topics_2):
     for t1 in topics_1:
         counterpart = [t2 for t2 in topics_2 if t1[0] == t2[0]]
 
+        return len(counterpart)
+
         # Skip vector components without a value in either topic list
         if counterpart:
             t2 = counterpart[0]
@@ -166,6 +169,9 @@ def main():
     """
     # Get corpus
     corpus = get_data()
+
+    # Randomize document order
+    random.shuffle()
 
     # Split corpus into comparison and test lists
     keys = [k for k in corpus]
