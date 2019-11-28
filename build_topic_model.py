@@ -29,7 +29,7 @@ def preprocess_documents(documents):
 
         for token in tokens:
             # Only include nominal words
-            if 'NN' in token.tag_:
+            if token.is_stop:
                 # Normalize text
                 token_text = token.text.lower()
                 token_text = lemmatizer.lemmatize(token_text)
