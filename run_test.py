@@ -15,20 +15,24 @@ from gensim.corpora import Dictionary
 from collections import defaultdict
 
 
-def split_corpus(corpus, split_idx):
+def split_corpus(corpus, train_proportion):
     """
     Split the corpus into comparison and test lists. Helper method for main()
     :param corpus: list of documents
-    :param split_idx: index of the split
+    :param test_proportion: proportion of documents to go into the training set
     :return: list of documents up to the split index, list of documents
     starting from the split index
     """
+    # Find index to split on
+    num_docs = [len(corpus[fam]) for fam in corpus]
+    split = int(min(num_docs)*train_proportion)
+
     comparison_docs = dict()
     test_docs = dict()
 
     for fam in corpus:
-        comparison_docs[fam] = corpus[fam][:split_idx]
-        test_docs[fam] = corpus[fam][split_idx:]
+        comparison_docs[fam] = corpus[fam][:split]
+        test_docs[fam] = corpus[fam][split:]
 
     return comparison_docs, test_docs
 
@@ -91,7 +95,8 @@ def closest_category(document, comparison_topics):
     # comparison documents. Average the sum
     for fam in comparison_topics:
         for comp_doc in comparison_topics[fam]:
-            fam_similarity[fam] += cosine_similaity(document, comp_doc)
+            #fam_similarity[fam] += cosine_similaity(document, comp_doc)
+            fam_similarity[fam] += count_similarity(document, comp_doc)
 
         fam_similarity[fam] = fam_similarity[fam]/len(comparison_topics[fam])
 
@@ -108,6 +113,21 @@ def closest_category(document, comparison_topics):
     return closest_family
 
 
+def count_similarity(topics_1, topics_2):
+    """
+    Count the number of common topics in two lists of topics. Helper method for
+    closest_category().
+    :param topics_1: list of topics of the first document
+    :param topics_2: list of topics of the second document
+    :return: Number of common topics in the two topic lists
+    """
+    # Deal with quirk of TransformedCorpus object in Gensim
+    topics_1 = [t[0] for t in topics_1[0]]
+    topics_2 = [t[0] for t in topics_2[0]]
+
+    return len([t for t in topics_1 if t in topics_2])
+
+
 def cosine_similaity(topics_1, topics_2):
     """
     Calculate the cosine similarity of two list of topics. Helper method for
@@ -116,7 +136,7 @@ def cosine_similaity(topics_1, topics_2):
     :param topics_2: list of topics of the second document
     :return: cosine similarity of the topics of the two document
     """
-    # Deal with quirk of TransformedCorpus object in gensim
+    # Deal with quirk of TransformedCorpus object in Gensim
     topics_1 = topics_1[0]
     topics_2 = topics_2[0]
 
@@ -125,10 +145,9 @@ def cosine_similaity(topics_1, topics_2):
     sum_a_2 = 0
     sum_b_2 = 0
 
+    # Add up vector components
     for t1 in topics_1:
         counterpart = [t2 for t2 in topics_2 if t1[0] == t2[0]]
-
-        return len(counterpart)
 
         # Skip vector components without a value in either topic list
         if counterpart:
@@ -171,12 +190,11 @@ def main():
     corpus = get_data()
 
     # Randomize document order
-    random.shuffle()
+    for fam in corpus:
+        random.shuffle(corpus[fam])
 
     # Split corpus into comparison and test lists
-    keys = [k for k in corpus]
-    split = int(len(corpus[keys[0]]) * 0.8)
-    comparison_docs, test_docs = split_corpus(corpus, split)
+    comparison_docs, test_docs = split_corpus(corpus, 0.5)
 
     # Train an LDA topic model on the comparison documents
     topic_model = get_topic_model(comparison_docs, 100, 50)
