@@ -114,21 +114,6 @@ def closest_category(document, comparison_topics):
     return closest_family
 
 
-def count_similarity(topics_1, topics_2):
-    """
-    Count the number of common topics in two lists of topics. Helper method for
-    closest_category().
-    :param topics_1: list of topics of the first document
-    :param topics_2: list of topics of the second document
-    :return: Number of common topics in the two topic lists
-    """
-    # Deal with quirk of TransformedCorpus object in Gensim
-    topics_1 = [t[0] for t in topics_1[0]]
-    topics_2 = [t[0] for t in topics_2[0]]
-
-    return len([t for t in topics_1 if t in topics_2])
-
-
 def cosine_similarity(topics_1, topics_2):
     """
     Calculate the cosine similarity of two list of topics. Helper method for
