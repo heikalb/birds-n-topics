@@ -13,6 +13,7 @@ from build_topic_model import get_topic_model
 from build_topic_model import preprocess_documents
 from gensim.corpora import Dictionary
 from collections import defaultdict
+import math
 
 
 def split_corpus(corpus, train_proportion):
@@ -27,6 +28,7 @@ def split_corpus(corpus, train_proportion):
     num_docs = [len(corpus[fam]) for fam in corpus]
     split = int(min(num_docs)*train_proportion)
 
+    # Split the corpus
     comparison_docs = dict()
     test_docs = dict()
 
@@ -89,14 +91,13 @@ def closest_category(document, comparison_topics):
     list
     :return: category label for the target document, i.e. the bird family
     """
-    fam_similarity = defaultdict(int)
+    fam_similarity = defaultdict(float)
 
     # Sum up cosine similarity of the target document topics with the
     # comparison documents. Average the sum
     for fam in comparison_topics:
         for comp_doc in comparison_topics[fam]:
-            #fam_similarity[fam] += cosine_similaity(document, comp_doc)
-            fam_similarity[fam] += count_similarity(document, comp_doc)
+            fam_similarity[fam] += cosine_similarity(document, comp_doc)
 
         fam_similarity[fam] = fam_similarity[fam]/len(comparison_topics[fam])
 
@@ -106,7 +107,7 @@ def closest_category(document, comparison_topics):
     closest_family = ''
 
     for fam in fam_similarity:
-        if fam_similarity[fam] >= max_sim:
+        if fam_similarity[fam] > max_sim:
             max_sim = fam_similarity[fam]
             closest_family = fam
 
@@ -128,7 +129,7 @@ def count_similarity(topics_1, topics_2):
     return len([t for t in topics_1 if t in topics_2])
 
 
-def cosine_similaity(topics_1, topics_2):
+def cosine_similarity(topics_1, topics_2):
     """
     Calculate the cosine similarity of two list of topics. Helper method for
     closest_category().
@@ -140,26 +141,19 @@ def cosine_similaity(topics_1, topics_2):
     topics_1 = topics_1[0]
     topics_2 = topics_2[0]
 
-    # Components of cosine similarity
-    sum_ab = 0
-    sum_a_2 = 0
-    sum_b_2 = 0
-
     # Add up vector components
+    sum_ab = 0
+
     for t1 in topics_1:
-        counterpart = [t2 for t2 in topics_2 if t1[0] == t2[0]]
+        for t2 in topics_2:
+            if t1[0] == t2[0]:
+                sum_ab += t1[1]*t2[1]
+                break
 
-        # Skip vector components without a value in either topic list
-        if counterpart:
-            t2 = counterpart[0]
-            sum_ab += t1[1]*t2[1]
-            sum_a_2 += t1[1]**2
-            sum_b_2 += t2[1]**2
+    sum_a_2 = sum([t[1]*2 for t in topics_1])
+    sum_b_2 = sum([t[1]*2 for t in topics_2])
 
-    if not sum_ab:
-        return 0
-
-    return sum_ab/(sum_a_2*sum_b_2)
+    return sum_ab/math.sqrt(sum_a_2*sum_b_2)
 
 
 def evaluate_predictions(predictions):
@@ -194,10 +188,10 @@ def main():
         random.shuffle(corpus[fam])
 
     # Split corpus into comparison and test lists
-    comparison_docs, test_docs = split_corpus(corpus, 0.5)
+    comparison_docs, test_docs = split_corpus(corpus, 0.8)
 
     # Train an LDA topic model on the comparison documents
-    topic_model = get_topic_model(comparison_docs, 100, 50)
+    topic_model = get_topic_model(comparison_docs, 100, 20)
 
     # Get the topics of the documents in the comparison list
     comparison_topics = get_topics(comparison_docs, topic_model)
