@@ -2,7 +2,6 @@
 Build a topic model based on the corpus of Wikipedia articles of bird species.
 Heikal Badrulhisham, 2019 <heikal93@gmail.com>
 """
-from get_data import get_data
 import spacy
 from nltk.stem import WordNetLemmatizer
 from gensim.models import LdaModel
